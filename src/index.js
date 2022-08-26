@@ -1,36 +1,69 @@
-// OpenWeather API key: c52825b8eee6d7b7f39532505506474f
-const lat = 33.834
-const lon = -87.280
+import './style.css'
+import GitHub from './img/github-icon.png'
+import FastCat from './img/icon-cat.png'
+import search from './img/search.png'
+import { getCoords } from './modules/weather'
+import { displayWeather, displayForecast, displayLocation } from './modules/display'
 
-
-const getWeather = async (lat, lon) => {
-    const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=c52825b8eee6d7b7f39532505506474f&units=imperial`, { mode: 'cors' })
-    const data = await response.json()
-
-    console.log(data)
-
-    return data
+const loadImages = () => {
+    const logo = document.getElementById('logo')
+    const FastCatIcon = new Image(60, 60)
+    FastCatIcon.src = FastCat
+    logo.appendChild(FastCatIcon)
+    
+    const icon = document.getElementById('searchIcon')
+    const searchIcon = new Image(35, 35)
+    searchIcon.src = search
+    icon.appendChild(searchIcon)
+    
+    const profile = document.getElementById('profile')
+    const GitHubIcon = new Image(25, 25)
+    GitHubIcon.src = GitHub
+    profile.appendChild(GitHubIcon)
 }
 
-const getForecast = async (lat, lon) => {
-    const response = await fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=c52825b8eee6d7b7f39532505506474f&units=imperial`, { mode: 'cors' })
-    const data = await response.json()
+const displayLoading = () => {
+    const loading = document.getElementById('overlay')
+    loading.classList.add('display')
 
-    console.log(data)
-
-    return data
+    setTimeout(() => {
+        loading.classList.remove('display')
+    }, 1000);
 }
 
-const getCoords = async (zip) => {
-    const response = await fetch(`http://api.openweathermap.org/geo/1.0/zip?zip=${zip}&appid=c52825b8eee6d7b7f39532505506474f`, { mode: 'cors' })
-    const data = await response.json()
+const initButtons = () => {
+    const searchBar = document.getElementById('searchbar')
+    const searchIcon = document.getElementById('searchIcon')
+    const toggle = document.getElementById('unit')
 
-    const lat = data.lat
-    const lon = data.lon
+    searchIcon.addEventListener('click', async () => {
+        displayLoading()
+        const parameters = searchBar.value
+        const coords = await getCoords(parameters)
+        const unit = (toggle.checked) ? 'metric' : 'imperial'
+        displayLocation(coords, unit)
+        displayWeather(coords, unit)
+        displayForecast(coords, unit)
+    })
 
-    return { lat, lon } 
+    toggle.addEventListener('change', async () => {
+        const unit = (toggle.checked) ? 'metric' : 'imperial'
+        const parameters = document.getElementById('location').getAttribute('zip')
+        const coords = await getCoords(parameters)
+        displayLocation(coords, unit)
+        displayWeather(coords, unit)
+        displayForecast(coords, unit)
+    })
 }
 
-getWeather(lat, lon)
+window.onload = async () => {
+    loadImages()
+    initButtons()
 
-getForecast(lat, lon)
+    const coords = await getCoords('10001')
+    const unit = 'imperial'
+    displayLocation(coords)
+    displayWeather(coords, unit)
+    displayForecast(coords, unit)
+}
+
