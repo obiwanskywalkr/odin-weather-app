@@ -15,7 +15,7 @@ module.exports = {
         new HtmlWebpackPlugin({
             title: 'WeatherCat',
             template: './src/index.html',
-            favicon: '',
+            favicon: './src/img/favicon.png',
         }),
     ],
     output: {
