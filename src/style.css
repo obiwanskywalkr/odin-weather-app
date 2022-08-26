@@ -170,7 +170,7 @@ main {
 }
 
 #info div {
-    width: 55px;
+    width: 65px;
     display: flex;
     flex-direction: column;
     align-items: center;
