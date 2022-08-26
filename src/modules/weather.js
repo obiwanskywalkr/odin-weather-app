@@ -56,7 +56,7 @@ const forecastDay = (weekday, icon, pop, temp) => {
 
     weekday = getDayName(getDay(fromUnixTime(weekday)))
     icon = `https://openweathermap.org/img/wn/${icon}@4x.png`
-    pop =`${pop * 100}%`
+    pop =`${Math.round(pop * 100)}%`
     temp = `${Math.round(temp)}°`
 
     return { weekday, icon, pop, temp }
